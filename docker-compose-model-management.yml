@@ -9,13 +9,17 @@ services:
     ports:
       - "9092:9092"
     environment:
-      KAFKA_ADVERTISED_HOST_NAME: localhost
+      KAFKA_ADVERTISED_HOST_NAME: kafka
       KAFKA_CREATE_TOPICS: "test:1:1"
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
   zeppelin:
-    image: knockdata/zeppelin-highcharts
+    build: ./zeppelin
     ports:
       - "8080:8080"
-    
+    depends_on:
+      - kafka
+    volumes:
+      - ./:/usr/zeppelin/notebook
+      - /var/run/docker.sock:/var/run/docker.sock
